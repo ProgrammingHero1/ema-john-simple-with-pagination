@@ -7,10 +7,12 @@ import { Link, useLoaderData } from 'react-router-dom';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [cart, setCart] = useState([])
     const { totalProducts } = useLoaderData();
 
-    const itemsPerPage = 10; //TODO: make it dynamic
+
     const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
     // const pageNumbers = [];
@@ -19,8 +21,8 @@ const Shop = () => {
     // }
 
     const pageNumbers = [...Array(totalPages).keys()];
+    
 
-    console.log(totalProducts);
     /**
      * Done: 1. Determine the total number of items: 
      * TODO: 2. Decide on the number of items per page: 
@@ -79,6 +81,12 @@ const Shop = () => {
         deleteShoppingCart();
     }
 
+    const options = [5, 10, 20];
+    function handleSelectChange(event) {
+        setItemsPerPage(parseInt(event.target.value));
+        setCurrentPage(0);
+      }
+
     return (
         <>
             <div className='shop-container'>
@@ -104,9 +112,21 @@ const Shop = () => {
             </div>
             {/* pagination */}
             <div className="pagination">
-                    {
-                        pageNumbers.map(number => <button key={number}>{number}</button>)
-                    }
+                <p>current Page: {currentPage} and items per page: {itemsPerPage}</p>
+                {
+                    pageNumbers.map(number => <button
+                        key={number}
+                        className={currentPage=== number ? 'selected': ''}
+                        onClick={() => setCurrentPage(number)}
+                    >{number}</button>)
+                }
+                <select value={itemsPerPage} onChange={handleSelectChange}>
+                    {options.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </select>
             </div>
         </>
     );
