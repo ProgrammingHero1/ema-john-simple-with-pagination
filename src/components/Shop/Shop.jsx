@@ -40,7 +40,7 @@ const Shop = () => {
     useEffect(() => {
         async function fetchData() {
             const response = await fetch(`http://localhost:5000/products?page=${currentPage}&limit=${itemsPerPage}`);
-            
+
             const data = await response.json();
             setProducts(data);
         }
@@ -93,7 +93,7 @@ const Shop = () => {
         deleteShoppingCart();
     }
 
-    const options = [5, 10, 20];
+    const options = [5, 10, 15, 20];
     function handleSelectChange(event) {
         setItemsPerPage(parseInt(event.target.value));
         setCurrentPage(0);
