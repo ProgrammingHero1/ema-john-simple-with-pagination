@@ -3,11 +3,29 @@ import { addToDb, deleteShoppingCart, getShoppingCart } from '../../utilities/fa
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css';
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([])
+    const { totalProducts } = useLoaderData();
+
+    const itemsPerPage = 10; //TODO: make it dynamic
+    const totalPages = Math.ceil(totalProducts / itemsPerPage);
+
+    // const pageNumbers = [];
+    // for (let i = 1; i <= totalPages; i++) {
+    //     pageNumbers.push(i);
+    // }
+
+    const pageNumbers = [...Array(totalPages).keys()];
+
+    console.log(totalProducts);
+    /**
+     * Done: 1. Determine the total number of items: 
+     * TODO: 2. Decide on the number of items per page: 
+     * DONE: 3. Calculate the total number of pages: 
+    */
 
     useEffect(() => {
         fetch('http://localhost:5000/products')
@@ -62,27 +80,35 @@ const Shop = () => {
     }
 
     return (
-        <div className='shop-container'>
-            <div className="products-container">
-                {
-                    products.map(product => <Product
-                        key={product._id}
-                        product={product}
-                        handleAddToCart={handleAddToCart}
-                    ></Product>)
-                }
+        <>
+            <div className='shop-container'>
+                <div className="products-container">
+                    {
+                        products.map(product => <Product
+                            key={product._id}
+                            product={product}
+                            handleAddToCart={handleAddToCart}
+                        ></Product>)
+                    }
+                </div>
+                <div className="cart-container">
+                    <Cart
+                        cart={cart}
+                        handleClearCart={handleClearCart}
+                    >
+                        <Link className='proceed-link' to="/orders">
+                            <button className='btn-proceed'>Review Order</button>
+                        </Link>
+                    </Cart>
+                </div>
             </div>
-            <div className="cart-container">
-                <Cart
-                    cart={cart}
-                    handleClearCart={handleClearCart}
-                >
-                    <Link className='proceed-link' to="/orders">
-                        <button className='btn-proceed'>Review Order</button>
-                    </Link>
-                </Cart>
+            {/* pagination */}
+            <div className="pagination">
+                    {
+                        pageNumbers.map(number => <button key={number}>{number}</button>)
+                    }
             </div>
-        </div>
+        </>
     );
 };
 
