@@ -21,19 +21,31 @@ const Shop = () => {
     // }
 
     const pageNumbers = [...Array(totalPages).keys()];
-    
+
 
     /**
      * Done: 1. Determine the total number of items: 
      * TODO: 2. Decide on the number of items per page: 
      * DONE: 3. Calculate the total number of pages: 
+     * DONE: 4. Determine the current page:
+     * 
     */
 
+    // useEffect(() => {
+    //     fetch('http://localhost:5000/products')
+    //         .then(res => res.json())
+    //         .then(data => setProducts(data))
+    // }, []);
+
     useEffect(() => {
-        fetch('http://localhost:5000/products')
-            .then(res => res.json())
-            .then(data => setProducts(data))
-    }, []);
+        async function fetchData() {
+            const response = await fetch(`http://localhost:5000/products?page=${currentPage}&limit=${itemsPerPage}`);
+            
+            const data = await response.json();
+            setProducts(data);
+        }
+        fetchData();
+    }, [currentPage, itemsPerPage]);
 
     useEffect(() => {
         const storedCart = getShoppingCart();
@@ -85,7 +97,7 @@ const Shop = () => {
     function handleSelectChange(event) {
         setItemsPerPage(parseInt(event.target.value));
         setCurrentPage(0);
-      }
+    }
 
     return (
         <>
@@ -116,7 +128,7 @@ const Shop = () => {
                 {
                     pageNumbers.map(number => <button
                         key={number}
-                        className={currentPage=== number ? 'selected': ''}
+                        className={currentPage === number ? 'selected' : ''}
                         onClick={() => setCurrentPage(number)}
                     >{number}</button>)
                 }
